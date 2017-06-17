@@ -10,26 +10,153 @@
             display:block;
         }
 
-        #content {
-            width: 50%;
-            height: 50%;
+        body{
+            background: black;
+            font-family: sans-serif;
+        }
 
-            position: absolute;
-            top:0;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        #countdown-title{
+            color: white;
+            font-weight: 100;
+            font-size: 40px;
+            margin: 40px 0px 20px;
+        }
 
-            margin: auto;
+        #clockdiv{
+            font-family: sans-serif;
+            color: white;
+            display: inline-block;
+            font-weight: 100;
+            text-align: center;
+            font-size: 30px;
+        }
+
+        #clockdiv > div{
+            padding: 10px;
+            border-radius: 3px;
+            background: gray;
+            display: inline-block;
+        }
+
+        #clockdiv div > span{
+            padding: 15px;
+            border-radius: 3px;
+            background: black;
+            display: inline-block;
+        }
+
+        .smalltext{
+            padding-top: 5px;
+            font-size: 16px;
+        }
+
+        #inner {
+            display: table;
+            margin: 0 auto;
+            color: white;
         }
     </style>
 </head>
-<body style="background-color: black">
+<body>
 
-<div id="content">
-    <p style="text-align:center;"><img src="logo.svg"></p>
+<div id="outer" style="width:100%">
+    <p style="margin-left:25%; max-width: 50%"><img src="logo.svg"></p>
+    <div id="inner">
+        <div id="clockdiv">
+            <div>
+                <span class="days"></span>
+                <div class="smalltext">Days</div>
+            </div>
+            <div>
+                <span class="hours"></span>
+                <div class="smalltext">Hours</div>
+            </div>
+            <div>
+                <span class="minutes"></span>
+                <div class="smalltext">Minutes</div>
+            </div>
+            <div>
+                <span class="seconds"></span>
+                <div class="smalltext">Seconds</div>
+            </div>
+        </div>
+    </div>
 </div>
-<h1 style="text-align:center; max-width: 75%">Organize public and in-house functional fitness tournaments and compete in global and gym's ranking, </h1>
+
+<script>
+    function getTimeRemaining(endtime) {
+        var t = Date.parse(endtime) - Date.parse(new Date());
+        var date_future = new Date('2017.08.01').getTime();
+        var date_now = new Date();
+
+        seconds = Math.floor((date_future - (date_now))/1000);
+        minutes = Math.floor(seconds/60);
+        hours = Math.floor(minutes/60);
+        days = Math.floor(hours/24);
+
+        hours = hours-(days*24);
+        minutes = minutes-(days*24*60)-(hours*60);
+        seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60);
+
+//    console.log('delta ' + delta);
+        console.log('days ' + days);
+        console.log('hours ' + hours);
+        console.log('minutes ' + minutes);
+        console.log('seconds ' + seconds);
+
+        return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+        };
+    }
+
+    function initializeClock(id, endtime) {
+        var clock = document.getElementById(id);
+        var daysSpan = clock.querySelector('.days');
+        var hoursSpan = clock.querySelector('.hours');
+        var minutesSpan = clock.querySelector('.minutes');
+        var secondsSpan = clock.querySelector('.seconds');
+
+        function updateClock() {
+            var t = getTimeRemaining(endtime);
+
+            daysSpan.innerHTML = t.days;
+            hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+            minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+            secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+            if (t.total <= 0) {
+                clearInterval(timeinterval);
+            }
+        }
+
+        updateClock();
+        var timeinterval = setInterval(updateClock, 1000);
+    }
+
+    var date_future = new Date('2017.08.01').getTime();
+    var date_now = new Date();
+
+    seconds = Math.floor((date_future - (date_now))/1000);
+    minutes = Math.floor(seconds/60);
+    hours = Math.floor(minutes/60);
+    days = Math.floor(hours/24);
+
+    hours = hours-(days*24);
+    minutes = minutes-(days*24*60)-(hours*60);
+    seconds = seconds-(days*24*60*60)-(hours*60*60)-(minutes*60);
+
+    console.log('days ' + days);
+    console.log('hours ' + hours);
+    console.log('minutes ' + minutes);
+    console.log('seconds ' + seconds);
+
+    var deadline = new Date(Date.parse(new Date()) + days * hours * minutes * seconds * 1000);
+    initializeClock('clockdiv', deadline);
+</script>
 
 </body>
 </html>
